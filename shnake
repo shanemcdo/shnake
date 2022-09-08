@@ -1,11 +1,10 @@
 #!/bin/sh
 
 PRG="shnake"
-ESC="\033"
 
 die(){
     show_cursor
-    echo "$PRG: $ESC[1;31merror:$ESC[0m $ESC[1;37m$*$ESC[0m" # print colored output to sterr
+    echo "$PRG: \033[1;31merror:\033[0m \033[1;37m$*\033[0m" >&2 # print to stderr
     exit 1
 }
 
@@ -13,15 +12,15 @@ move_cursor(){
     if [ "$#" -ne 2 ]; then
         die "Incorrect number of args passed to move_cursor"
     fi
-    printf "$ESC[%d;%dH" "$2" "$1"
+    printf "\033[%d;%dH" "$2" "$1"
 }
 
 show_cursor(){
-    printf "$ESC[?25h"
+    printf "\033[?25h"
 }
 
 hide_cursor(){
-    printf "$ESC[?25l"
+    printf "\033[?25l"
 }
 
 main(){
