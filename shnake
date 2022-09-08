@@ -15,6 +15,7 @@ SCALE_X=2
 
 die(){
     show_cursor
+    stty cooked
     printf "$PRG: \033[1;31merror:\033[0m \033[1;37m%s$RESET_COLOR\n" "$*" >&2 # print to stderr
     exit 1
 }
@@ -38,12 +39,128 @@ print_block(){
     if [ "$#" -ne 3 ]; then
         die "Incorrect number of args passed to print_block"
     fi
-    move_cursor "$(($1 * SCALE_X + OFFSET_X))" "$(($2 + OFFSET_Y))"
+    move_cursor "$(($1 / SCALE_X + OFFSET_X))" "$(($2 + OFFSET_Y))"
     printf "$3"
 }
 
+# requires "$@" to be passed
+get_random_fruit(){
+    # TODO ensure no overlap
+    # eval coord="\${$((RANDOM % $# + 1))}"
+    # fruit_x="$(echo $coord | cut -d ',' -f 1)"
+    # fruit_y="$(echo $coord | cut -d ',' -f 2)"
+    fruit_x="$(( RANDOM % width ))"
+    fruit_y="$(( RANDOM % height ))"
+}
+
+# requires "$@" to be passed
+eat_fruit(){
+    if point_eq "$new_head_x" "$new_head_y" "$fruit_x" "$fruit_y"; then
+        (( score++ ))
+        get_random_fruit "$@"
+    fi
+}
+
+# points_eq x1 y1 x2 y2
+points_eq(){
+    if [ "$#" -ne 4 ]; then
+        die "Incorrect number of args passed to points_equal"
+    fi
+    [ "$1" -eq "$3" -a "$2" -eq "$4" ]
+}
+
+# points_ne x1 y1 x2 y2
+points_ne(){
+    if [ "$#" -ne 4 ]; then
+        die "Incorrect number of args passed to points_equal"
+    fi
+    [ "$1" -ne "$3" -o "$2" -ne "$4" ]
+}
+
+get_size(){
+    term_width="$(tput cols)"
+    term_height="$(tput lines)"
+    width="$(( (term_width - OFFSET_X) * SCALE_X ))"
+    height="$(( term_height - OFFSET_Y ))"
+}
+
+out_of_bounds(){
+    if [ "$#" -ne 2 ]; then
+        die "Incorrect number of args passed to out_of_bounds"
+    fi
+    [ "$1" -lt 0 -o "$1" -ge "$width" -o "$2" -lt 0 -o "$2" -ge "$height" ]
+}
+
+move_head(){
+    new_head_x="$head_x"
+    new_head_y="$head_y"
+    case "$direction" in
+        "up") new_head_y="$(( head_y - 1 ))";;
+        "down") new_head_y="$(( head_y + 1 ))";;
+        "left") new_head_x="$(( head_x - 1 ))";;
+        "right") new_head_x="$(( head_x + 1 ))";;
+    esac
+    if out_of_bounds "$new_head_x" "$new_head_y"; then
+        game_over
+    fi
+    set -- "$@" "$head_x,$head_y"
+    draw_tail
+    head_x="$new_head_x"
+    head_y="$new_head_y"
+    draw_head
+    if [ "$length_to_add" -gt 0 ]; then
+        (( length_to_add-- ))
+        shift
+    fi
+}
+
+game_over(){
+    die "TODO: game over"
+}
+
+getch(){
+    read -rn1 char
+    echo "$char"
+}
+
+draw_head(){
+    print_block "$head_x" "$head_y" "$HEAD"
+}
+
+# must be called after a new head has been made but before
+draw_tail(){
+    print_block "$head_x" "$head_y" "$BODY"
+}
+
+# requires "$@" as an arg
+erase_tail(){
+    # TODO
+    true
+}
+
+draw_score(){
+    move_cursor 0 0
+    echo "Score: $score"
+}
+
 main(){
+    stty raw
     hide_cursor
+    score=0
+    length_to_add=2
+    direction="up"
+    get_size
+    head_x="$((width / 2))"
+    head_y="$((height / 2))"
+    get_random_fruit "$@"
+    clear
+    draw_score
+    while true; do
+        clear
+        move_head "$@"
+        erase_tail "$@"
+        sleep 0.2
+    done
     show_cursor
 }
 
