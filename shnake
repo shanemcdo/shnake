@@ -64,9 +64,9 @@ get_random_fruit(){
     fruit_y="$(( RANDOM % height ))"
     if [ "$fruit_x,$fruit_y" = "$head_x,$head_y" ] || collides_with_body "$fruit_x" "$fruit_y"; then
         get_random_fruit
-        return
+    else
+        print_block "$fruit_x" "$fruit_y" "$FRUIT"
     fi
-    print_block "$fruit_x" "$fruit_y" "$FRUIT"
 }
 
 eat_fruit(){
