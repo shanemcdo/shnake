@@ -66,28 +66,12 @@ get_random_fruit(){
 }
 
 eat_fruit(){
-    if points_eq "$new_head_x" "$new_head_y" "$fruit_x" "$fruit_y"; then
+    if [ "$new_head_x,$new_head_y" = "$fruit_x,$fruit_y" ]; then
         score="$(( score + 1 ))"
         draw_score
         length_to_add="$(( length_to_add + 2 ))"
         get_random_fruit
     fi
-}
-
-# points_eq x1 y1 x2 y2
-points_eq(){
-    if [ "$#" -ne 4 ]; then
-        die "Incorrect number of args passed to points_equal"
-    fi
-    [ "$1" -eq "$3" -a "$2" -eq "$4" ]
-}
-
-# points_ne x1 y1 x2 y2
-points_ne(){
-    if [ "$#" -ne 4 ]; then
-        die "Incorrect number of args passed to points_equal"
-    fi
-    [ "$1" -ne "$3" -o "$2" -ne "$4" ]
 }
 
 get_size(){
@@ -168,6 +152,7 @@ kbin(){
         d) direction="right";;
         q) quit;;
     esac
+    # TODO block turning back
 }
 
 main(){
