@@ -55,7 +55,6 @@ print_block(){
     printf "$3"
 }
 
-# requires "$@" to be passed
 get_random_fruit(){
     # TODO ensure no overlap
     # eval coord="\${$((RANDOM % $# + 1))}"
@@ -66,13 +65,12 @@ get_random_fruit(){
     print_block "$fruit_x" "$fruit_y" "$FRUIT"
 }
 
-# requires "$@" to be passed
 eat_fruit(){
     if points_eq "$new_head_x" "$new_head_y" "$fruit_x" "$fruit_y"; then
         score="$(( score + 1 ))"
         draw_score
         length_to_add="$(( length_to_add + 2 ))"
-        get_random_fruit "$@"
+        get_random_fruit
     fi
 }
 
@@ -119,8 +117,8 @@ move_head(){
         game_over
     fi
     # TODO body colisions
-    set -- "$@" "$head_x,$head_y"
-    draw_tail
+    set -- $body "$head_x,$head_y"
+    draw_body
     head_x="$new_head_x"
     head_y="$new_head_y"
     draw_head
@@ -133,7 +131,7 @@ move_head(){
         print_block "$x" "$y" "$CLEAR"
         shift
     fi
-    tail="$@"
+    body="$@"
 }
 
 game_over(){
@@ -152,7 +150,7 @@ draw_head(){
 }
 
 # must be called after a new head has been made but before
-draw_tail(){
+draw_body(){
     print_block "$head_x" "$head_y" "$BODY"
 }
 
@@ -181,12 +179,12 @@ main(){
     get_size
     head_x="$((width / 2))"
     head_y="$((height / 2))"
+    body=""
     clear
-    get_random_fruit "$@"
+    get_random_fruit
     draw_score
     while true; do
-        move_head "$@"
-        set -- $tail
+        move_head
         kbin
         sleep 0.07
     done
