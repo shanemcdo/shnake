@@ -16,3 +16,4 @@ to quit.
 
 - `$RANDOM` is undefined for dash
 - `head -c1` may not be defined on some systems
+- `clear` is not guarenteed by POSIX
