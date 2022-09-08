@@ -9,6 +9,9 @@ HEAD="$HEAD_COLOR  $RESET_COLOR"
 BODY="${BODY_COLOR}XX$RESET_COLOR"
 FRUIT="${FRUIT_COLOR}▝▘$RESET_COLOR"
 CLEAR="  "
+OFFSET_X=1
+OFFSET_Y=2
+SCALE_X=2
 
 die(){
     show_cursor
@@ -29,6 +32,14 @@ show_cursor(){
 
 hide_cursor(){
     printf "\033[?25l"
+}
+
+print_block(){
+    if [ "$#" -ne 3 ]; then
+        die "Incorrect number of args passed to print_block"
+    fi
+    move_cursor "$(($1 * SCALE_X + OFFSET_X))" "$(($2 + OFFSET_Y))"
+    printf "$3"
 }
 
 main(){
