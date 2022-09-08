@@ -11,3 +11,8 @@ The controls are
 for movement and
 <kbd>q</kbd>
 to quit.
+
+## Known Issues
+
+- `$RANDOM` is undefined for dash
+- `head -c1` may not be defined on some systems
