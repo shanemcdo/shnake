@@ -13,17 +13,21 @@ OFFSET_X=1
 OFFSET_Y=2
 SCALE_X=2
 
-quit(){
+reset_term(){
     show_cursor
     stty cooked
+}
+
+quit(){
+    reset_term
     clear
+    printf "$*"
     echo You got a score of $score
     exit 0
 }
 
 die(){
-    show_cursor
-    stty cooked
+    reset_term
     printf "$PRG: \033[1;31merror:\033[0m \033[1;37m%s$RESET_COLOR\n" "$*" >&2 # print to stderr
     exit 1
 }
@@ -132,7 +136,7 @@ move_head(){
 }
 
 game_over(){
-    die "TODO: game over"
+    quit "You died!\n"
 }
 
 getch(){
