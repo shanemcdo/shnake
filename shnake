@@ -151,7 +151,6 @@ kbin(){
         d) [ "$direction" != "left" ] && direction="right";;
         q) quit;;
     esac
-    # TODO block turning back
 }
 
 print_instructions(){
