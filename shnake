@@ -97,10 +97,9 @@ move_head(){
         "left") new_head_x="$(( head_x - 1 ))";;
         "right") new_head_x="$(( head_x + 1 ))";;
     esac
-    if out_of_bounds "$new_head_x" "$new_head_y"; then
+    if out_of_bounds "$new_head_x" "$new_head_y" || echo "$body" | grep -q "$new_head_x,$new_head_y"; then
         game_over
     fi
-    # TODO body colisions
     set -- $body "$head_x,$head_y"
     draw_body
     head_x="$new_head_x"
@@ -146,18 +145,27 @@ draw_score(){
 kbin(){
     ch="$(getch)"
     case "$ch" in
-        w) direction="up";;
-        a) direction="left";;
-        s) direction="down";;
-        d) direction="right";;
+        w) [ "$direction" != "down" ] && direction="up";;
+        a) [ "$direction" != "right" ] && direction="left";;
+        s) [ "$direction" != "up" ] && direction="down";;
+        d) [ "$direction" != "left" ] && direction="right";;
         q) quit;;
     esac
     # TODO block turning back
 }
 
+print_instructions(){
+    while IFS= read -r line; do
+        echo "$line"
+    done << EOF
+Welcome to shnake.
+use the wasd keys to control the snake or hit q to quit.
+Press any key to continue.
+EOF
+    read -n1
+}
+
 main(){
-    stty raw
-    hide_cursor
     score=0
     length_to_add=2
     direction="up"
@@ -165,6 +173,9 @@ main(){
     head_x="$((width / 2))"
     head_y="$((height / 2))"
     body=""
+    print_instructions
+    stty raw
+    hide_cursor
     clear
     get_random_fruit
     draw_score
