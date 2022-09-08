@@ -184,7 +184,7 @@ EOF
 
 main(){
     score=0
-    length_to_add=30
+    length_to_add=2
     direction="up"
     get_size
     head_x="$((width / 2))"
