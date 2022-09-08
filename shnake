@@ -69,9 +69,9 @@ get_random_fruit(){
 # requires "$@" to be passed
 eat_fruit(){
     if points_eq "$new_head_x" "$new_head_y" "$fruit_x" "$fruit_y"; then
-        (( score++ ))
+        score="$(( score + 1 ))"
         draw_score
-        (( length_to_add += 2 ))
+        length_to_add="$(( length_to_add + 2 ))"
         get_random_fruit "$@"
     fi
 }
@@ -125,7 +125,7 @@ move_head(){
     draw_head
     eat_fruit
     if [ "$length_to_add" -gt 0 ]; then
-        (( length_to_add-- ))
+        length_to_add="$(( length_to_add - 1 ))"
     else
         x="$(echo $1 | cut -d ',' -f 1)"
         y="$(echo $1 | cut -d ',' -f 2)"
