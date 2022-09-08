@@ -118,6 +118,7 @@ move_head(){
     if out_of_bounds "$new_head_x" "$new_head_y"; then
         game_over
     fi
+    # TODO body colisions
     set -- "$@" "$head_x,$head_y"
     draw_tail
     head_x="$new_head_x"
