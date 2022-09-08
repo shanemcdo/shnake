@@ -13,6 +13,14 @@ OFFSET_X=1
 OFFSET_Y=2
 SCALE_X=2
 
+quit(){
+    show_cursor
+    stty cooked
+    clear
+    echo You got a score of $score
+    exit 0
+}
+
 die(){
     show_cursor
     stty cooked
@@ -39,7 +47,7 @@ print_block(){
     if [ "$#" -ne 3 ]; then
         die "Incorrect number of args passed to print_block"
     fi
-    move_cursor "$(($1 / SCALE_X + OFFSET_X))" "$(($2 + OFFSET_Y))"
+    move_cursor "$(($1 * SCALE_X + OFFSET_X))" "$(($2 + OFFSET_Y))"
     printf "$3"
 }
 
@@ -51,12 +59,15 @@ get_random_fruit(){
     # fruit_y="$(echo $coord | cut -d ',' -f 2)"
     fruit_x="$(( RANDOM % width ))"
     fruit_y="$(( RANDOM % height ))"
+    print_block "$fruit_x" "$fruit_y" "$FRUIT"
 }
 
 # requires "$@" to be passed
 eat_fruit(){
-    if point_eq "$new_head_x" "$new_head_y" "$fruit_x" "$fruit_y"; then
+    if points_eq "$new_head_x" "$new_head_y" "$fruit_x" "$fruit_y"; then
         (( score++ ))
+        draw_score
+        (( length_to_add += 2 ))
         get_random_fruit "$@"
     fi
 }
@@ -80,8 +91,8 @@ points_ne(){
 get_size(){
     term_width="$(tput cols)"
     term_height="$(tput lines)"
-    width="$(( (term_width - OFFSET_X) * SCALE_X ))"
-    height="$(( term_height - OFFSET_Y ))"
+    width="$(( (term_width - OFFSET_X) / SCALE_X ))"
+    height="$term_height"
 }
 
 out_of_bounds(){
@@ -108,10 +119,16 @@ move_head(){
     head_x="$new_head_x"
     head_y="$new_head_y"
     draw_head
+    eat_fruit
     if [ "$length_to_add" -gt 0 ]; then
         (( length_to_add-- ))
+    else
+        x="$(echo $1 | cut -d ',' -f 1)"
+        y="$(echo $1 | cut -d ',' -f 2)"
+        print_block "$x" "$y" "$CLEAR"
         shift
     fi
+    tail="$@"
 }
 
 game_over(){
@@ -119,8 +136,10 @@ game_over(){
 }
 
 getch(){
-    read -rn1 char
-    echo "$char"
+    old_tty_settings=$(stty -g)   # Save old settings.
+    stty -icanon time 0 min 0
+    head -c1
+    stty "$old_tty_settings"      # Restore old settings.
 }
 
 draw_head(){
@@ -132,15 +151,20 @@ draw_tail(){
     print_block "$head_x" "$head_y" "$BODY"
 }
 
-# requires "$@" as an arg
-erase_tail(){
-    # TODO
-    true
-}
-
 draw_score(){
     move_cursor 0 0
     echo "Score: $score"
+}
+
+kbin(){
+    ch="$(getch)"
+    case "$ch" in
+        w) direction="up";;
+        a) direction="left";;
+        s) direction="down";;
+        d) direction="right";;
+        q) quit;;
+    esac
 }
 
 main(){
@@ -152,14 +176,14 @@ main(){
     get_size
     head_x="$((width / 2))"
     head_y="$((height / 2))"
-    get_random_fruit "$@"
     clear
+    get_random_fruit "$@"
     draw_score
     while true; do
-        clear
         move_head "$@"
-        erase_tail "$@"
-        sleep 0.2
+        set -- $tail
+        kbin
+        sleep 0.07
     done
     show_cursor
 }
