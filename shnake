@@ -159,9 +159,9 @@ print_instructions(){
     done << EOF
 Welcome to shnake.
 use the wasd keys to control the snake or hit q to quit.
-Press any key to continue.
+Press enter to continue.
 EOF
-    read -n1
+    read _
 }
 
 main(){
