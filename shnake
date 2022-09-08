@@ -88,6 +88,20 @@ out_of_bounds(){
     [ "$1" -lt 0  ] || [ "$1" -ge "$width"  ] || [ "$2" -lt 0  ] || [ "$2" -ge "$height" ]
 }
 
+collides_with_body(){
+    if [ "$#" -ne 2 ]; then
+        die "Incorrect number of args passed to collides_with_body"
+    fi
+    echo "$body" | grep -qE "\b$1,$2\b"
+}
+
+collides(){
+    if [ "$#" -ne 2 ]; then
+        die "Incorrect number of args passed to collides"
+    fi
+    out_of_bounds "$1" "$2" || collides_with_body "$1" "$2"
+}
+
 move_head(){
     new_head_x="$head_x"
     new_head_y="$head_y"
@@ -97,7 +111,7 @@ move_head(){
         "left") new_head_x="$(( head_x - 1 ))";;
         "right") new_head_x="$(( head_x + 1 ))";;
     esac
-    if out_of_bounds "$new_head_x" "$new_head_y" || echo "$body" | grep -q "$new_head_x,$new_head_y"; then
+    if collides "$new_head_x" "$new_head_y"; then
         game_over
     fi
     set -- $body "$head_x,$head_y"
