@@ -22,7 +22,7 @@ quit(){
     reset_term
     clear
     printf "$*"
-    echo You got a score of $score
+    echo "You got a score of $score"
     exit 0
 }
 
@@ -110,12 +110,12 @@ move_head(){
     if [ "$length_to_add" -gt 0 ]; then
         length_to_add="$(( length_to_add - 1 ))"
     else
-        x="$(echo $1 | cut -d ',' -f 1)"
-        y="$(echo $1 | cut -d ',' -f 2)"
+        x="$(echo "$1" | cut -d ',' -f 1)"
+        y="$(echo "$1" | cut -d ',' -f 2)"
         print_block "$x" "$y" "$CLEAR"
         shift
     fi
-    body="$@"
+    body="$*"
 }
 
 game_over(){
