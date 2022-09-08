@@ -1,10 +1,18 @@
 #!/bin/sh
 
 PRG="shnake"
+HEAD_COLOR="\033[42m"
+BODY_COLOR="\033[102m\033[36m"
+FRUIT_COLOR="\033[31m"
+RESET_COLOR="\033[0;0m"
+HEAD="$HEAD_COLOR  $RESET_COLOR"
+BODY="${BODY_COLOR}XX$RESET_COLOR"
+FRUIT="${FRUIT_COLOR}▝▘$RESET_COLOR"
+CLEAR="  "
 
 die(){
     show_cursor
-    echo "$PRG: \033[1;31merror:\033[0m \033[1;37m$*\033[0m" >&2 # print to stderr
+    printf "$PRG: \033[1;31merror:\033[0m \033[1;37m%s$RESET_COLOR\n" "$*" >&2 # print to stderr
     exit 1
 }
 
@@ -25,7 +33,6 @@ hide_cursor(){
 
 main(){
     hide_cursor
-
     show_cursor
 }
 
