@@ -85,7 +85,7 @@ out_of_bounds(){
     if [ "$#" -ne 2 ]; then
         die "Incorrect number of args passed to out_of_bounds"
     fi
-    [ "$1" -lt 0 -o "$1" -ge "$width" -o "$2" -lt 0 -o "$2" -ge "$height" ]
+    [ "$1" -lt 0  ] || [ "$1" -ge "$width"  ] || [ "$2" -lt 0  ] || [ "$2" -ge "$height" ]
 }
 
 move_head(){
