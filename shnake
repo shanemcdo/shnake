@@ -179,7 +179,7 @@ Welcome to shnake.
 use the wasd keys to control the snake or hit q to quit.
 Press enter to continue.
 EOF
-    read _
+    read -r _
 }
 
 main(){
