@@ -56,12 +56,16 @@ print_block(){
 }
 
 get_random_fruit(){
-    # TODO ensure no overlap
+    # TODO ensure no overlap better
     # eval coord="\${$((RANDOM % $# + 1))}"
     # fruit_x="$(echo $coord | cut -d ',' -f 1)"
     # fruit_y="$(echo $coord | cut -d ',' -f 2)"
     fruit_x="$(( RANDOM % width ))"
     fruit_y="$(( RANDOM % height ))"
+    if [ "$fruit_x,$fruit_y" = "$head_x,$head_y" ] || collides_with_body "$fruit_x" "$fruit_y"; then
+        get_random_fruit
+        return
+    fi
     print_block "$fruit_x" "$fruit_y" "$FRUIT"
 }
 
@@ -180,7 +184,7 @@ EOF
 
 main(){
     score=0
-    length_to_add=2
+    length_to_add=30
     direction="up"
     get_size
     head_x="$((width / 2))"
