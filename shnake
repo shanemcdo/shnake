@@ -57,6 +57,7 @@ print_block(){
 
 get_random_fruit(){
     # TODO ensure no overlap better
+    # TODO sometimes fruit does not come back ... fix that
     # eval coord="\${$((RANDOM % $# + 1))}"
     # fruit_x="$(echo $coord | cut -d ',' -f 1)"
     # fruit_y="$(echo $coord | cut -d ',' -f 2)"
