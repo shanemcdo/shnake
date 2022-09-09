@@ -64,6 +64,9 @@ get_random_fruit(){
     fruit_x="$(( RANDOM % width ))"
     fruit_y="$(( RANDOM % height ))"
     if [ "$fruit_x,$fruit_y" = "$head_x,$head_y" ] || collides_with_body "$fruit_x" "$fruit_y"; then
+        echo $fruit_x,$fruit_y >> log.txt
+        echo $head_x,$head_y >> log.txt
+        echo $body >> log.txt
         get_random_fruit
     else
         print_block "$fruit_x" "$fruit_y" "$FRUIT"
@@ -82,8 +85,12 @@ eat_fruit(){
 get_size(){
     term_width="$(tput cols)"
     term_height="$(tput lines)"
-    width="$(( (term_width - OFFSET_X) / SCALE_X ))"
-    height="$term_height"
+    width="$(( term_width / SCALE_X ))"
+    # 1 and not OFFSET_Y because OFFSET_Y accounts for
+    # a) the switch from 1-indexing to 0-indexing
+    # b) The one line used for score
+    # This only needs to account for score
+    height="$(( term_height - 1 ))"
 }
 
 out_of_bounds(){
@@ -124,7 +131,6 @@ move_head(){
     head_x="$new_head_x"
     head_y="$new_head_y"
     draw_head
-    eat_fruit
     if [ "$length_to_add" -gt 0 ]; then
         length_to_add="$(( length_to_add - 1 ))"
     else
@@ -134,6 +140,7 @@ move_head(){
         shift
     fi
     body="$*"
+    eat_fruit
 }
 
 game_over(){
