@@ -12,6 +12,8 @@ for movement and
 <kbd>q</kbd>
 to quit.
 
+On some systems using `bash` instead of `sh` is required.
+
 ## Github Pages
 
 `index.html` is a symbolic link to the `shnake` script so we can curl from the github pages site directly
