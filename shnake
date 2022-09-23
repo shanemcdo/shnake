@@ -64,9 +64,6 @@ get_random_fruit(){
     fruit_x="$(( RANDOM % width ))"
     fruit_y="$(( RANDOM % height ))"
     if [ "$fruit_x,$fruit_y" = "$head_x,$head_y" ] || collides_with_body "$fruit_x" "$fruit_y"; then
-        echo $fruit_x,$fruit_y >> log.txt
-        echo $head_x,$head_y >> log.txt
-        echo $body >> log.txt
         get_random_fruit
     else
         print_block "$fruit_x" "$fruit_y" "$FRUIT"
