@@ -16,6 +16,7 @@ SCALE_X=2
 reset_term(){
     show_cursor
     stty cooked
+    stty echo
 }
 
 quit(){
@@ -146,7 +147,7 @@ game_over(){
 
 getch(){
     old_tty_settings=$(stty -g)   # Save old settings.
-    stty -icanon time 0 min 0 -echo
+    stty -icanon time 0 min 0
     head -c1
     stty "$old_tty_settings"      # Restore old settings.
 }
@@ -196,7 +197,7 @@ main(){
     head_y="$((height / 2))"
     body=""
     print_instructions
-    stty raw
+    stty raw -echo
     hide_cursor
     clear
     get_random_fruit
