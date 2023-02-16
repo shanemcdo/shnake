@@ -146,7 +146,7 @@ game_over(){
 
 getch(){
     old_tty_settings=$(stty -g)   # Save old settings.
-    stty -icanon time 0 min 0
+    stty -icanon time 0 min 0 -echo
     head -c1
     stty "$old_tty_settings"      # Restore old settings.
 }
