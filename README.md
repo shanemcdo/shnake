@@ -2,7 +2,7 @@
 
 A basic snake game written in POSIX-compliant shell.
 
-To run you can paste `sh -c "$(curl https://shanemcd.net/shnake/)"` into any good terminal.
+To run you can paste `sh -c "$(curl https://shanemcd.net/shnake/)"` into any UNIX terminal.
 The controls are
 <kbd>w</kbd>
 <kbd>a</kbd>
